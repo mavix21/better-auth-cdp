@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { jwt } from "better-auth/plugins";
 import { db } from "./db";
+import { nextCookies } from "better-auth/next-js";
 
 const siteUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
@@ -29,5 +30,6 @@ export const auth = betterAuth({
         getSubject: (session) => session.user.id,
       },
     }),
+    nextCookies()
   ],
 });
