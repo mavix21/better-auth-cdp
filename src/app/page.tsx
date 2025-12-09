@@ -1,5 +1,6 @@
 "use client";
 import ClientApp from "@/components/ClientApp";
+import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 import Providers from "@/components/Providers";
 
 /**
@@ -9,8 +10,10 @@ import Providers from "@/components/Providers";
  */
 export default function Home() {
   return (
-    <Providers>
-      <ClientApp />
-    </Providers>
+    <ConvexClientProvider>
+      <Providers>
+        <ClientApp />
+      </Providers>
+    </ConvexClientProvider>           
   );
 }

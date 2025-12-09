@@ -24,8 +24,30 @@ if (!ethereumAccountType && !solanaAccountType) {
   );
 }
 
+/**
+ * Get JWT from Better Auth for CDP custom authentication
+ * Uses the /api/auth/token endpoint exposed by the jwt plugin
+ */
+async function getJwt(): Promise<string | undefined> {
+  try {
+    const response = await fetch("/api/auth/token", {
+      credentials: "include",
+    });
+    if (!response.ok) {
+      return undefined;
+    }
+    const data: { token: string } = await response.json();
+    return data.token;
+  } catch {
+    return undefined;
+  }
+}
+
 const CDP_CONFIG = {
   projectId: process.env.NEXT_PUBLIC_CDP_PROJECT_ID ?? "",
+  customAuth: {
+    getJwt,
+  },
   ...(ethereumAccountType && {
     ethereum: {
       createOnLogin: ethereumAccountType,
@@ -38,8 +60,7 @@ const CDP_CONFIG = {
   }),
   appName: "CDP Next.js StarterKit",
   appLogoUrl: "http://localhost:3000/logo.svg",
-  authMethods: ["email", "sms", "oauth:google", "oauth:apple"],
-} as Config;
+} satisfies Config;
 
 /**
  * Providers component that wraps the application in all requisite providers

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEvmAddress, useIsSignedIn } from "@coinbase/cdp-hooks";
+import { useEvmAddress } from "@coinbase/cdp-hooks";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPublicClient, http, formatEther } from "viem";
 import { baseSepolia } from "viem/chains";
@@ -8,6 +8,7 @@ import { baseSepolia } from "viem/chains";
 import EOATransaction from "./EOATransaction";
 import Header from "./Header";
 import UserBalance from "./UserBalance";
+import { authClient } from "@/lib/auth/auth-client";
 
 /**
  * Create a viem client to access user's balance on the Base Sepolia network
@@ -21,7 +22,7 @@ const client = createPublicClient({
  * The Signed In screen
  */
 export default function SignedInScreen() {
-  const { isSignedIn } = useIsSignedIn();
+  const { data: session } = authClient.useSession();
   const { evmAddress } = useEvmAddress();
   const [balance, setBalance] = useState<bigint | undefined>(undefined);
 
@@ -57,7 +58,7 @@ export default function SignedInScreen() {
             />
           </div>
           <div className="card card--transaction">
-            {isSignedIn && evmAddress && (
+            {session?.user && evmAddress && (
               <EOATransaction balance={formattedBalance} onSuccess={getBalance} />
             )}
           </div>

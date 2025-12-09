@@ -1,9 +1,9 @@
 "use client";
 import { useEvmAddress } from "@coinbase/cdp-hooks";
-import { AuthButton } from "@coinbase/cdp-react/components/AuthButton";
 import { useEffect, useState } from "react";
 
 import { IconCheck, IconCopy, IconUser } from "@/components/Icons";
+import { authClient } from "@/lib/auth/auth-client";
 
 /**
  * Header component
@@ -11,6 +11,7 @@ import { IconCheck, IconCopy, IconUser } from "@/components/Icons";
 export default function Header() {
   const { evmAddress } = useEvmAddress();
   const [isCopied, setIsCopied] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const copyAddress = async () => {
     if (!evmAddress) return;
@@ -19,6 +20,17 @@ export default function Header() {
       setIsCopied(true);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    try {
+      await authClient.signOut();
+    } catch (error) {
+      console.error("Sign out failed:", error);
+    } finally {
+      setIsSigningOut(false);
     }
   };
 
@@ -55,7 +67,19 @@ export default function Header() {
               </span>
             </button>
           )}
-          <AuthButton />
+          <button
+            onClick={handleSignOut}
+            disabled={isSigningOut}
+            style={{
+              padding: "0.5rem 1rem",
+              borderRadius: "4px",
+              backgroundColor: "transparent",
+              border: "1px solid #ccc",
+              cursor: isSigningOut ? "not-allowed" : "pointer",
+            }}
+          >
+            {isSigningOut ? "Signing out..." : "Sign Out"}
+          </button>
         </div>
       </div>
     </header>
