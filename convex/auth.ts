@@ -23,6 +23,7 @@ export const createAuth = (
       disabled: optionsOnly,
     },
     baseURL: siteUrl,
+    trustedOrigins: [siteUrl],
     database: authComponent.adapter(ctx),
     // Configure simple, non-verified email/password to get started
     emailAndPassword: {
