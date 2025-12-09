@@ -36,7 +36,7 @@ export const createAuth = (
       jwt({
         jwks: {
           keyPairConfig: {
-            alg: "ES256",
+            alg: "RS256",
           },
         },
         jwt: {
