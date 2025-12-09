@@ -7,6 +7,7 @@ import { nextCookies } from "better-auth/next-js";
 const siteUrl = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const auth = betterAuth({
+  experimental: { joins: true },
   baseURL: siteUrl,
   trustedOrigins: [siteUrl],
   database: drizzleAdapter(db, {
