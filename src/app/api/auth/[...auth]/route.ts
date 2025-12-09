@@ -1,3 +1,4 @@
-import { nextJsHandler } from "@convex-dev/better-auth/nextjs";
+import { toNextJsHandler } from "better-auth/next-js";
+import { auth } from "@/auth";
 
-export const { GET, POST } = nextJsHandler();
+export const { GET, POST } = toNextJsHandler(auth);
