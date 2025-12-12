@@ -7,6 +7,9 @@ import SignedInScreen from "@/components/SignedInScreen";
 import SignInScreen from "@/components/SignInScreen";
 import { authClient } from "@/lib/auth/auth-client";
 
+// Skip CDP wallet check in development (CDP requires HTTPS for JWKS)
+const SKIP_CDP_AUTH = process.env.NODE_ENV === "development";
+
 /**
  * A component that displays the client app.
  */
@@ -16,7 +19,7 @@ export default function ClientApp() {
   const { data: session, isPending } = authClient.useSession();
 
   // Show loading while Better Auth session is being fetched or CDP is initializing
-  if (isPending || !isInitialized) {
+  if (isPending || (!SKIP_CDP_AUTH && !isInitialized)) {
     return (
       <div className="app flex-col-container flex-grow">
         <Loading />
@@ -24,8 +27,10 @@ export default function ClientApp() {
     );
   }
 
-  // User is signed in with Better Auth AND CDP wallet is ready
-  const isFullyAuthenticated = session?.user && isSignedIn;
+  // In dev: only check Better Auth session. In prod: also require CDP wallet
+  const isFullyAuthenticated = SKIP_CDP_AUTH 
+    ? !!session?.user 
+    : session?.user && isSignedIn;
 
   return (
     <div className="app flex-col-container flex-grow">

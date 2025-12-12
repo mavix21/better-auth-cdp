@@ -4,6 +4,9 @@ import { useAuthenticateWithJWT } from "@coinbase/cdp-hooks";
 import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth/auth-client";
 
+// Skip CDP wallet auth in development (CDP requires HTTPS for JWKS)
+const SKIP_CDP_AUTH = process.env.NODE_ENV === "development";
+
 /**
  * Sign in screen with Better Auth + CDP wallet creation
  */
@@ -20,6 +23,8 @@ export default function SignInScreen() {
 
   // After Better Auth login, authenticate with CDP to create/retrieve wallet
   useEffect(() => {
+    if (SKIP_CDP_AUTH) return; // Skip in development
+    
     if (session?.user && !isCDPAuthenticating) {
       setIsCDPAuthenticating(true);
       authenticateWithJWT()
